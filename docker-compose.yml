@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+    db:
+        image: postgres:latest
+        environment:
+            POSTGRES_USER: your-username
+            POSTGRES_PASSWORD: your-password
+            POSTGRES_DB: your-dbname
+        ports:
+            - "5432:5432"
+        volumes:
+            - dbdata:/var/lib/postgresql/data
+            - ./db/create_table.sql:/docker-entrypoint-initdb.d/create_table.sql
+
+    app:
+        build: ./server/
+        environment:
+            DB_HOST: db
+        ports:
+            - "8000:8000"
+        depends_on:
+            - db
+
+volumes:
+    dbdata:
